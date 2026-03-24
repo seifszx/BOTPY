@@ -1,11 +1,10 @@
 FROM python:3.11-slim
 
-# Install Chrome and dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     wget \
-    gnupg \
-    unzip \
     curl \
+    unzip \
     ca-certificates \
     fonts-liberation \
     libasound2 \
@@ -43,12 +42,11 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-# Install Google Chrome
-RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
-    >> /etc/apt/sources.list.d/google-chrome.list \
+# Install Google Chrome directly from .deb package (no apt-key needed)
+RUN wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && apt-get update \
-    && apt-get install -y google-chrome-stable --no-install-recommends \
+    && apt-get install -y /tmp/chrome.deb --no-install-recommends \
+    && rm /tmp/chrome.deb \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
